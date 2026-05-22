@@ -7,6 +7,7 @@ import { Badge } from '../ui/Badge';
 import { FaviconImage } from '../ui/FaviconImage';
 import { BookmarkButton } from '../ui/BookmarkButton';
 import { HighlightedText } from '../ui/HighlightedText';
+import { CompanyBanner } from '../ui/CompanyBanner';
 import type { FinnhubNewsItem, SectorConfig } from '../../types/news';
 
 export interface NewsCardProps {
@@ -126,8 +127,8 @@ export function NewsCard({
         />
       )}
 
-      {/* Image — only render when we have one; no placeholder */}
-      {hasImage && (
+      {/* Image or company logo banner */}
+      {hasImage ? (
         <div className={`relative overflow-hidden ${imagePb}`}>
           <motion.img
             src={item.image}
@@ -140,6 +141,13 @@ export function NewsCard({
           />
           <div className="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-[#0a0a0f]/80 to-transparent dark:from-[#0a0a0f]/80 from-[#f8f8fc]/80" />
         </div>
+      ) : (
+        <CompanyBanner
+          related={item.related}
+          gradientFrom={sector.gradientFrom}
+          gradientTo={sector.gradientTo}
+          featured={featured}
+        />
       )}
 
       {/* Content */}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { getSymbolDomain } from '../ui/CompanyBanner';
 import { toRelativeTime } from '../../lib/utils';
 import { analyzeSentiment } from '../../lib/sentiment';
 import { FreshnessIndicator } from '../ui/FreshnessIndicator';
@@ -34,8 +35,10 @@ export function NewsCardCompact({
   activeKeywords,
 }: NewsCardCompactProps) {
   const [imageError, setImageError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   const sentiment = analyzeSentiment(item.headline);
   const hasImage = Boolean(item.image) && !imageError;
+  const symbolDomain = !hasImage ? getSymbolDomain(item.related) : null;
 
   return (
     <motion.div
@@ -48,8 +51,8 @@ export function NewsCardCompact({
       className="group flex gap-3 rounded-xl border border-white/8 bg-white/4 p-3 transition-all duration-200 hover:border-white/16 hover:bg-white/7 dark:border-white/8 dark:bg-white/4 dark:hover:border-white/16 dark:hover:bg-white/7 border-black/6 bg-black/2 hover:border-black/12 hover:bg-black/4"
       style={{ borderLeftColor: sector.gradientFrom, borderLeftWidth: '2px' }}
     >
-      {/* Thumbnail — only when available */}
-      {hasImage && (
+      {/* Thumbnail: Finnhub image or Clearbit company logo */}
+      {hasImage ? (
         <div className="relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-lg">
           <img
             src={item.image}
@@ -59,7 +62,19 @@ export function NewsCardCompact({
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
-      )}
+      ) : symbolDomain && !logoError ? (
+        <div
+          className="flex h-14 w-20 flex-shrink-0 items-center justify-center rounded-lg"
+          style={{ background: `linear-gradient(135deg, ${sector.gradientFrom}50, ${sector.gradientTo}20)` }}
+        >
+          <img
+            src={`https://logo.clearbit.com/${symbolDomain}`}
+            alt=""
+            className="h-9 w-9 rounded-lg object-contain"
+            onError={() => setLogoError(true)}
+          />
+        </div>
+      ) : null}
 
       {/* Content */}
       <div className="min-w-0 flex-1">
