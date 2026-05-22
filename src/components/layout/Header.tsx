@@ -5,7 +5,6 @@ import { LayoutToggle, type Layout } from '../ui/LayoutToggle';
 
 interface HeaderProps {
   secondsUntilRefresh: number;
-  lastUpdated: Date | null;
   layout: Layout;
   onLayoutChange: (l: Layout) => void;
   bookmarkCount: number;
@@ -14,7 +13,6 @@ interface HeaderProps {
 
 export function Header({
   secondsUntilRefresh,
-  lastUpdated,
   layout,
   onLayoutChange,
   bookmarkCount,
@@ -41,7 +39,7 @@ export function Header({
           </div>
         </div>
         <p className="mt-0.5 text-xs text-white/30 dark:text-white/30 text-black/40">
-          Real-time sector news · Powered by Finnhub
+          Real-time sector news
         </p>
       </div>
 
@@ -66,7 +64,7 @@ export function Header({
           )}
         </button>
 
-        <RefreshIndicator secondsUntilRefresh={secondsUntilRefresh} lastUpdated={lastUpdated} />
+        <RefreshIndicator secondsUntilRefresh={secondsUntilRefresh} />
         <ThemeToggle />
       </div>
     </motion.header>

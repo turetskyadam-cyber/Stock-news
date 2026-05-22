@@ -25,7 +25,7 @@ export function App() {
   const [activeKeywords, setActiveKeywords] = useState<string[]>([]);
   const [filterText, setFilterText] = useState('');
 
-  const { items, status, error, lastUpdated, refetch } = useSectorNews(activeSector);
+  const { items, status, error, refetch } = useSectorNews(activeSector);
   const { secondsUntilRefresh } = useAutoRefresh(refetch);
   const { bookmarks, remove, isSaved, toggle } = useBookmarks();
 
@@ -121,7 +121,6 @@ export function App() {
     <Layout activeSector={activeSector}>
       <Header
         secondsUntilRefresh={secondsUntilRefresh}
-        lastUpdated={lastUpdated}
         layout={layout}
         onLayoutChange={setLayout}
         bookmarkCount={bookmarks.length}

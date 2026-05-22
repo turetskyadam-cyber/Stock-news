@@ -3,7 +3,6 @@ import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-mo
 import { toRelativeTime } from '../../lib/utils';
 import { FaviconImage } from '../ui/FaviconImage';
 import { BookmarkButton } from '../ui/BookmarkButton';
-import { FreshnessIndicator } from '../ui/FreshnessIndicator';
 import { analyzeSentiment } from '../../lib/sentiment';
 import type { FinnhubNewsItem, SectorConfig } from '../../types/news';
 
@@ -18,24 +17,17 @@ interface StoryModeProps {
   onToggleSave: (item: FinnhubNewsItem) => void;
 }
 
-// Slide only on x, never go blank — mode="sync" means old exits while new enters
 const slideVariants = {
-  enter: (dir: number) => ({
-    x: dir >= 0 ? 60 : -60,
-    opacity: 0,
-    scale: 0.97,
-  }),
+  enter: (dir: number) => ({ x: dir >= 0 ? 18 : -18, opacity: 0 }),
   center: {
     x: 0,
     opacity: 1,
-    scale: 1,
-    transition: { type: 'spring' as const, stiffness: 320, damping: 32 },
+    transition: { duration: 0.32, ease: [0.25, 0.1, 0.25, 1] as number[] },
   },
   exit: (dir: number) => ({
-    x: dir >= 0 ? -60 : 60,
+    x: dir >= 0 ? -18 : 18,
     opacity: 0,
-    scale: 0.97,
-    transition: { duration: 0.14, ease: 'easeIn' as const },
+    transition: { duration: 0.22, ease: [0.4, 0, 0.6, 1] as number[] },
   }),
 };
 
@@ -247,7 +239,6 @@ export function StoryMode({
                   <FaviconImage source={item.source} />
                   <span className="text-xs font-medium text-white/60">{item.source}</span>
                   <span className="text-[10px] text-white/35">{toRelativeTime(item.datetime)}</span>
-                  <FreshnessIndicator datetime={item.datetime} />
                   {sentiment?.sentiment !== 'neutral' && (
                     <span
                       className="ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold"

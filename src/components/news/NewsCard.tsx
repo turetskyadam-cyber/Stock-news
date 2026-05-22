@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { toRelativeTime } from '../../lib/utils';
 import { analyzeSentiment } from '../../lib/sentiment';
-import { getFreshness, FreshnessIndicator, FreshnessGlowBar } from '../ui/FreshnessIndicator';
+import { FreshnessGlowBar } from '../ui/FreshnessIndicator';
 import { Badge } from '../ui/Badge';
 import { FaviconImage } from '../ui/FaviconImage';
 import { BookmarkButton } from '../ui/BookmarkButton';
@@ -78,7 +78,6 @@ export function NewsCard({
   };
 
   const sentiment = analyzeSentiment(item.headline);
-  const { level: freshnessLevel } = getFreshness(item.datetime);
   const sc = sentimentColors[sentiment.sentiment];
   const hasImage = Boolean(item.image) && !imageError;
 
@@ -155,12 +154,6 @@ export function NewsCard({
         {/* Meta row */}
         <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
           <Badge variant="source">{item.source}</Badge>
-          {item.category && item.category !== item.source.toLowerCase() && (
-            <Badge variant="category">{item.category}</Badge>
-          )}
-          {freshnessLevel !== 'normal' && (
-            <FreshnessIndicator datetime={item.datetime} />
-          )}
           <Badge variant="time" className="ml-auto">
             {toRelativeTime(item.datetime)}
           </Badge>

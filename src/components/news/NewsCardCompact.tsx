@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { getSymbolDomain } from '../ui/CompanyBanner';
 import { toRelativeTime } from '../../lib/utils';
 import { analyzeSentiment } from '../../lib/sentiment';
-import { FreshnessIndicator } from '../ui/FreshnessIndicator';
 import { FaviconImage } from '../ui/FaviconImage';
 import { BookmarkButton } from '../ui/BookmarkButton';
 import { HighlightedText } from '../ui/HighlightedText';
@@ -88,7 +87,6 @@ export function NewsCardCompact({
             className={`h-1.5 w-1.5 flex-shrink-0 rounded-full ${sentimentDot[sentiment.sentiment]}`}
             title={`Sentiment: ${sentiment.sentiment}`}
           />
-          <FreshnessIndicator datetime={item.datetime} />
           <span className="ml-auto flex-shrink-0 text-[10px] text-white/30 dark:text-white/30 text-black/30 tabular-nums">
             {toRelativeTime(item.datetime)}
           </span>

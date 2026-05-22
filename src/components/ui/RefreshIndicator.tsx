@@ -1,17 +1,15 @@
 import { motion } from 'framer-motion';
-import { formatDistanceToNow } from 'date-fns';
 import { REFRESH_INTERVAL_MS } from '../../lib/constants';
 
 interface RefreshIndicatorProps {
   secondsUntilRefresh: number;
-  lastUpdated: Date | null;
 }
 
 const RADIUS = 12;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 const TOTAL = Math.round(REFRESH_INTERVAL_MS / 1000);
 
-export function RefreshIndicator({ secondsUntilRefresh, lastUpdated }: RefreshIndicatorProps) {
+export function RefreshIndicator({ secondsUntilRefresh }: RefreshIndicatorProps) {
   const offset = CIRCUMFERENCE * (1 - secondsUntilRefresh / TOTAL);
 
   return (
@@ -57,11 +55,6 @@ export function RefreshIndicator({ secondsUntilRefresh, lastUpdated }: RefreshIn
         <span className="text-[10px] font-medium text-white/30 dark:text-white/30 text-black/30">
           LIVE
         </span>
-        {lastUpdated && (
-          <span className="text-[10px] text-white/50 dark:text-white/50 text-black/40 tabular-nums">
-            {formatDistanceToNow(lastUpdated, { addSuffix: true })}
-          </span>
-        )}
       </div>
     </div>
   );

@@ -55,20 +55,10 @@ function HourlyChart({ items, sector }: { items: FinnhubNewsItem[]; sector: Sect
 }
 
 export function SectorStats({ items, sector, onStoryMode }: SectorStatsProps) {
-  const uniqueSources = useMemo(
-    () => new Set(items.map((i) => i.source)).size,
-    [items]
-  );
-
   const sentiment = useMemo(
     () => analyzeMultiple(items.map((i) => i.headline)),
     [items]
   );
-
-  const newestItem = items[0];
-  const newestMinutesAgo = newestItem
-    ? Math.round((Date.now() / 1000 - newestItem.datetime) / 60)
-    : null;
 
   const sentimentConfig = {
     positive: { label: 'Positive', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
@@ -97,35 +87,6 @@ export function SectorStats({ items, sector, onStoryMode }: SectorStatsProps) {
       </div>
 
       <div className="h-7 w-px bg-white/10 dark:bg-white/10 bg-black/10" />
-
-      {/* Unique sources */}
-      <div className="flex flex-col">
-        <span className="text-[10px] font-medium uppercase tracking-widest text-white/30 dark:text-white/30 text-black/30">
-          Sources
-        </span>
-        <span className="text-sm font-bold text-white/80 dark:text-white/80 text-gray-800 tabular-nums">
-          {uniqueSources}
-        </span>
-      </div>
-
-      <div className="h-7 w-px bg-white/10 dark:bg-white/10 bg-black/10" />
-
-      {/* Freshest */}
-      {newestMinutesAgo !== null && (
-        <>
-          <div className="flex flex-col">
-            <span className="text-[10px] font-medium uppercase tracking-widest text-white/30 dark:text-white/30 text-black/30">
-              Freshest
-            </span>
-            <span className="text-sm font-bold text-white/80 dark:text-white/80 text-gray-800 tabular-nums">
-              {newestMinutesAgo < 60
-                ? `${newestMinutesAgo}m ago`
-                : `${Math.round(newestMinutesAgo / 60)}h ago`}
-            </span>
-          </div>
-          <div className="h-7 w-px bg-white/10 dark:bg-white/10 bg-black/10" />
-        </>
-      )}
 
       {/* Sentiment */}
       <div className="flex flex-col">

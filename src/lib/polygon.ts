@@ -49,8 +49,8 @@ function toNewsItem(a: PolygonArticle, sectorKey: string): FinnhubNewsItem {
 }
 
 function getFromDate(): string {
-  // Last 3 days to cover weekends when markets are closed
-  return new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  // Last 7 days to cover weekends and get maximum article coverage
+  return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 }
 
 async function fetchForTicker(
@@ -59,7 +59,7 @@ async function fetchForTicker(
   signal?: AbortSignal
 ): Promise<FinnhubNewsItem[]> {
   const from = getFromDate();
-  const url = `${BASE}?ticker=${encodeURIComponent(ticker)}&published_utc.gte=${from}&limit=25&order=desc&apiKey=${KEY}`;
+  const url = `${BASE}?ticker=${encodeURIComponent(ticker)}&published_utc.gte=${from}&limit=50&order=desc&apiKey=${KEY}`;
   const res = await fetch(url, { signal });
   if (!res.ok) {
     if (res.status === 429) throw new Error('Rate limited — try again in a minute');
@@ -97,7 +97,7 @@ export async function fetchSectorItems(
   }
 
   const results = await Promise.allSettled(
-    symbols.slice(0, 4).map(async (sym, i) => {
+    symbols.slice(0, 5).map(async (sym, i) => {
       if (i > 0) await delay(i * 250);
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
       return fetchForTicker(sym, sector.key, signal);
