@@ -126,8 +126,8 @@ export function NewsCard({
         />
       )}
 
-      {/* Image */}
-      {hasImage ? (
+      {/* Image — only render when we have one; no placeholder */}
+      {hasImage && (
         <div className={`relative overflow-hidden ${imagePb}`}>
           <motion.img
             src={item.image}
@@ -139,15 +139,6 @@ export function NewsCard({
             transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           />
           <div className="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-[#0a0a0f]/80 to-transparent dark:from-[#0a0a0f]/80 from-[#f8f8fc]/80" />
-        </div>
-      ) : (
-        <div
-          className="relative flex items-center justify-center pb-[30%]"
-          style={{ background: `linear-gradient(135deg, ${sector.gradientFrom}, ${sector.gradientTo})` }}
-        >
-          <span className="absolute inset-0 flex items-center justify-center text-4xl opacity-20" aria-hidden>
-            {sector.icon}
-          </span>
         </div>
       )}
 

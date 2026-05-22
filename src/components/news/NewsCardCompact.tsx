@@ -48,8 +48,8 @@ export function NewsCardCompact({
       className="group flex gap-3 rounded-xl border border-white/8 bg-white/4 p-3 transition-all duration-200 hover:border-white/16 hover:bg-white/7 dark:border-white/8 dark:bg-white/4 dark:hover:border-white/16 dark:hover:bg-white/7 border-black/6 bg-black/2 hover:border-black/12 hover:bg-black/4"
       style={{ borderLeftColor: sector.gradientFrom, borderLeftWidth: '2px' }}
     >
-      {/* Thumbnail */}
-      {hasImage ? (
+      {/* Thumbnail — only when available */}
+      {hasImage && (
         <div className="relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-lg">
           <img
             src={item.image}
@@ -58,13 +58,6 @@ export function NewsCardCompact({
             onError={() => setImageError(true)}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        </div>
-      ) : (
-        <div
-          className="flex h-14 w-20 flex-shrink-0 items-center justify-center rounded-lg text-2xl opacity-40"
-          style={{ background: `linear-gradient(135deg, ${sector.gradientFrom}, ${sector.gradientTo})` }}
-        >
-          {sector.icon}
         </div>
       )}
 
