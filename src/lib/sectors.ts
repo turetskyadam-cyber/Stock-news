@@ -1,0 +1,78 @@
+import type { SectorConfig } from '../types/news';
+
+export const SECTORS: SectorConfig[] = [
+  {
+    key: 'technology',
+    label: 'Technology',
+    icon: '💻',
+    symbols: ['AAPL', 'MSFT', 'NVDA', 'GOOGL'],
+    color: 'blue',
+    gradientFrom: 'rgba(59,130,246,0.18)',
+    gradientTo: 'rgba(37,99,235,0.06)',
+  },
+  {
+    key: 'energy',
+    label: 'Energy',
+    icon: '⚡',
+    symbols: ['XOM', 'CVX', 'COP'],
+    color: 'amber',
+    gradientFrom: 'rgba(245,158,11,0.18)',
+    gradientTo: 'rgba(217,119,6,0.06)',
+  },
+  {
+    key: 'healthcare',
+    label: 'Healthcare',
+    icon: '🏥',
+    symbols: ['JNJ', 'PFE', 'UNH'],
+    color: 'emerald',
+    gradientFrom: 'rgba(16,185,129,0.18)',
+    gradientTo: 'rgba(5,150,105,0.06)',
+  },
+  {
+    key: 'finance',
+    label: 'Finance',
+    icon: '🏦',
+    symbols: ['JPM', 'BAC', 'GS'],
+    color: 'violet',
+    gradientFrom: 'rgba(139,92,246,0.18)',
+    gradientTo: 'rgba(109,40,217,0.06)',
+  },
+  {
+    key: 'consumer',
+    label: 'Consumer',
+    icon: '🛒',
+    symbols: ['AMZN', 'TSLA', 'NKE'],
+    color: 'rose',
+    gradientFrom: 'rgba(244,63,94,0.18)',
+    gradientTo: 'rgba(225,29,72,0.06)',
+  },
+  {
+    key: 'industrials',
+    label: 'Industrials',
+    icon: '🏭',
+    symbols: ['GE', 'CAT', 'BA'],
+    color: 'orange',
+    gradientFrom: 'rgba(249,115,22,0.18)',
+    gradientTo: 'rgba(234,88,12,0.06)',
+  },
+  {
+    key: 'crypto',
+    label: 'Crypto',
+    icon: '₿',
+    category: 'crypto',
+    color: 'yellow',
+    gradientFrom: 'rgba(234,179,8,0.18)',
+    gradientTo: 'rgba(202,138,4,0.06)',
+  },
+  {
+    key: 'general',
+    label: 'General',
+    icon: '📰',
+    category: 'general',
+    color: 'slate',
+    gradientFrom: 'rgba(100,116,139,0.18)',
+    gradientTo: 'rgba(71,85,105,0.06)',
+  },
+];
+
+export const SECTOR_MAP = new Map(SECTORS.map((s) => [s.key, s]));

@@ -1,0 +1,33 @@
+@import '@fontsource-variable/inter';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --spotlight-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .dark {
+    color-scheme: dark;
+    --spotlight-color: rgba(255, 255, 255, 0.07);
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    font-family: 'Inter Variable', 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  /* Custom shimmer keyframe for skeleton cards */
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+}
