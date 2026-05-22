@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FinnhubNewsItem, FetchStatus, SectorKey } from '../types/news';
 import { SECTOR_MAP } from '../lib/sectors';
-import { fetchSectorItems } from '../lib/finnhub';
+import { fetchSectorItems } from '../lib/polygon';
 import { REFRESH_INTERVAL_MS } from '../lib/constants';
 
 interface CacheEntry {

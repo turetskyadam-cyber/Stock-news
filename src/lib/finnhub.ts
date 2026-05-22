@@ -1,4 +1,6 @@
-import { API_BASE, MAX_NEWS_PER_SECTOR, REQUEST_DELAY_MS } from './constants';
+import { MAX_NEWS_PER_SECTOR, REQUEST_DELAY_MS } from './constants';
+
+const API_BASE = 'https://finnhub.io/api/v1';
 import { deduplicateAndSort, getTodayRange } from './utils';
 import type { FinnhubNewsItem, SectorConfig } from '../types/news';
 
