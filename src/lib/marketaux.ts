@@ -2,6 +2,7 @@ import { deduplicateAndSort } from './utils';
 import { MAX_NEWS_PER_SECTOR } from './constants';
 import { getDemoItems } from './demoNews';
 import { curateForSector } from './sectorRelevance';
+import { SECTORS } from './sectors';
 import type { FinnhubNewsItem, SectorConfig } from '../types/news';
 
 // Default key so the deployed site works without a Vercel env var.
@@ -138,4 +139,29 @@ export async function fetchSectorItems(
     // so the site never shows an error screen.
     return getDemoItems(sector.key);
   }
+}
+
+export interface SectorLead {
+  sector: SectorConfig;
+  item: FinnhubNewsItem;
+}
+
+// Lightweight fetch for "Adam's Briefing": one page per sector (quota-friendly),
+// returning each sector's single top curated story.
+export async function fetchSectorLeads(signal: AbortSignal): Promise<SectorLead[]> {
+  return Promise.all(
+    SECTORS.map(async (sector) => {
+      try {
+        const arts = await request(`${BASE}?${buildParams(sector, 1)}`, signal);
+        const items = curateForSector(
+          deduplicateAndSort(arts.map((a) => toNewsItem(a, sector.key)), 10),
+          sector
+        );
+        return { sector, item: items[0] ?? getDemoItems(sector.key)[0] };
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') throw err;
+        return { sector, item: getDemoItems(sector.key)[0] };
+      }
+    })
+  );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toRelativeTime } from '../../lib/utils';
 import { FaviconImage } from '../ui/FaviconImage';
+import { AdamsOverview } from '../editorial/AdamsOverview';
 import { LoadingGrid } from '../states/LoadingGrid';
 import { ErrorState } from '../states/ErrorState';
 import { EmptyState } from '../states/EmptyState';
@@ -166,6 +167,9 @@ export function CuratedFeed({
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Adam's editorial overview + 90-day forecast */}
+      <AdamsOverview items={items} sector={sector} />
+
       {/* Section eyebrow */}
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
