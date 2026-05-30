@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toRelativeTime } from '../../lib/utils';
 import { FaviconImage } from '../ui/FaviconImage';
-import { BookmarkButton } from '../ui/BookmarkButton';
 import { LoadingGrid } from '../states/LoadingGrid';
 import { ErrorState } from '../states/ErrorState';
 import { EmptyState } from '../states/EmptyState';
@@ -13,8 +12,6 @@ interface CuratedFeedProps {
   status: FetchStatus;
   error: string | null;
   sector: SectorConfig;
-  isSaved: (id: number) => boolean;
-  onToggleSave: (item: FinnhubNewsItem) => void;
   onStoryOpen: (index: number) => void;
   onRetry: () => void;
 }
@@ -35,13 +32,9 @@ function Meta({ item }: { item: FinnhubNewsItem }) {
 function LeadStory({
   item,
   sector,
-  isSaved,
-  onToggleSave,
 }: {
   item: FinnhubNewsItem;
   sector: SectorConfig;
-  isSaved: boolean;
-  onToggleSave: () => void;
 }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = Boolean(item.image) && !imgError;
@@ -94,15 +87,6 @@ function LeadStory({
           </p>
         )}
       </div>
-
-      {/* Save — top right, appears on hover */}
-      <div className="absolute right-5 top-5">
-        <BookmarkButton
-          isSaved={isSaved}
-          onToggle={onToggleSave}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white/80 backdrop-blur-md transition-all hover:bg-black/50 hover:text-white"
-        />
-      </div>
     </motion.a>
   );
 }
@@ -111,14 +95,10 @@ function SelectionCard({
   item,
   rank,
   index,
-  isSaved,
-  onToggleSave,
 }: {
   item: FinnhubNewsItem;
   rank: number;
   index: number;
-  isSaved: boolean;
-  onToggleSave: () => void;
 }) {
   const [imgError, setImgError] = useState(false);
   const hasImage = Boolean(item.image) && !imgError;
@@ -156,18 +136,9 @@ function SelectionCard({
       {/* Text */}
       <div className="min-w-0 flex-1">
         <Meta item={item} />
-        <h3 className="font-display mt-1.5 text-balance text-[15px] font-medium leading-snug text-white/90 line-clamp-3 transition-colors group-hover:text-white dark:text-white/90 dark:group-hover:text-white text-gray-900/90 group-hover:text-gray-900 sm:text-base">
+        <h3 className="font-display mt-1.5 text-balance text-[15px] font-medium leading-snug text-white/90 line-clamp-3 transition-colors group-hover:text-white sm:text-base">
           {item.headline}
         </h3>
-      </div>
-
-      {/* Save */}
-      <div className="flex-shrink-0 self-start opacity-0 transition-opacity group-hover:opacity-100">
-        <BookmarkButton
-          isSaved={isSaved}
-          onToggle={onToggleSave}
-          className="flex h-7 w-7 items-center justify-center rounded-full text-white/40 hover:text-amber-400 dark:text-white/40 text-black/30"
-        />
       </div>
     </motion.a>
   );
@@ -178,8 +149,6 @@ export function CuratedFeed({
   status,
   error,
   sector,
-  isSaved,
-  onToggleSave,
   onStoryOpen,
   onRetry,
 }: CuratedFeedProps) {
@@ -223,25 +192,13 @@ export function CuratedFeed({
 
       {lead && (
         <div className="mb-8 grid grid-cols-1">
-          <LeadStory
-            item={lead}
-            sector={sector}
-            isSaved={isSaved(lead.id)}
-            onToggleSave={() => onToggleSave(lead)}
-          />
+          <LeadStory item={lead} sector={sector} />
         </div>
       )}
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
         {rest.map((item, i) => (
-          <SelectionCard
-            key={item.id}
-            item={item}
-            rank={i + 2}
-            index={i}
-            isSaved={isSaved(item.id)}
-            onToggleSave={() => onToggleSave(item)}
-          />
+          <SelectionCard key={item.id} item={item} rank={i + 2} index={i} />
         ))}
       </div>
     </motion.section>

@@ -1,32 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Layout } from './components/layout/Layout';
 import { Header } from './components/layout/Header';
 import { SectorTabs } from './components/sectors/SectorTabs';
 import { CuratedFeed } from './components/news/CuratedFeed';
 import { StoryMode } from './components/story/StoryMode';
-import { ReadingListDrawer } from './components/bookmarks/ReadingListDrawer';
 import { useSectorNews } from './hooks/useSectorNews';
 import { useAutoRefresh } from './hooks/useAutoRefresh';
-import { useBookmarks } from './hooks/useBookmarks';
 import { SECTORS, SECTOR_MAP } from './lib/sectors';
-import type { SectorKey, FinnhubNewsItem } from './types/news';
+import type { SectorKey } from './types/news';
 
 export function App() {
   const [activeSector, setActiveSector] = useState<SectorKey>('technology');
   const [storyIndex, setStoryIndex] = useState<number | null>(null);
-  const [isReadingListOpen, setIsReadingListOpen] = useState(false);
 
   const { items, status, error, refetch } = useSectorNews(activeSector);
   const { secondsUntilRefresh } = useAutoRefresh(refetch);
-  const { bookmarks, remove, isSaved, toggle } = useBookmarks();
 
   const sector = SECTOR_MAP.get(activeSector)!;
-
-  const handleToggleSave = useCallback(
-    (item: FinnhubNewsItem) => toggle(item, activeSector),
-    [toggle, activeSector]
-  );
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -42,27 +33,19 @@ export function App() {
         const idx = SECTORS.findIndex((s) => s.key === activeSector);
         if (idx < SECTORS.length - 1) setActiveSector(SECTORS[idx + 1].key);
       }
-      if (e.key === ' ' && storyIndex === null && !isReadingListOpen) {
+      if (e.key === ' ' && storyIndex === null) {
         e.preventDefault();
         if (items.length > 0) setStoryIndex(0);
       }
-      if ((e.key === 'r' || e.key === 'R') && storyIndex === null) {
-        setIsReadingListOpen((o) => !o);
-      }
-      if (e.key === 'Escape' && isReadingListOpen) setIsReadingListOpen(false);
     };
 
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
-  }, [activeSector, storyIndex, isReadingListOpen, items.length]);
+  }, [activeSector, storyIndex, items.length]);
 
   return (
     <Layout activeSector={activeSector}>
-      <Header
-        secondsUntilRefresh={secondsUntilRefresh}
-        bookmarkCount={bookmarks.length}
-        onOpenReadingList={() => setIsReadingListOpen(true)}
-      />
+      <Header secondsUntilRefresh={secondsUntilRefresh} />
 
       <SectorTabs activeSector={activeSector} onChange={setActiveSector} />
 
@@ -71,8 +54,6 @@ export function App() {
         status={status}
         error={error}
         sector={sector}
-        isSaved={isSaved}
-        onToggleSave={handleToggleSave}
         onStoryOpen={setStoryIndex}
         onRetry={refetch}
       />
@@ -85,19 +66,9 @@ export function App() {
             initialIndex={Math.min(storyIndex, items.length - 1)}
             sector={sector}
             onClose={() => setStoryIndex(null)}
-            isSaved={isSaved}
-            onToggleSave={handleToggleSave}
           />
         )}
       </AnimatePresence>
-
-      {/* Saved articles drawer */}
-      <ReadingListDrawer
-        isOpen={isReadingListOpen}
-        onClose={() => setIsReadingListOpen(false)}
-        bookmarks={bookmarks}
-        onRemove={remove}
-      />
     </Layout>
   );
 }

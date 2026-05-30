@@ -2,21 +2,14 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { App } from './App';
-import { ThemeContext } from './hooks/useTheme';
-import { useThemeState } from './hooks/useTheme';
 
-function Root() {
-  const themeValue = useThemeState();
-
-  return (
-    <ThemeContext.Provider value={themeValue}>
-      <App />
-    </ThemeContext.Provider>
-  );
-}
+// Dark-only experience — keep the theme class pinned regardless of any
+// previously stored preference.
+document.documentElement.classList.add('dark');
+document.documentElement.style.setProperty('color-scheme', 'dark');
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Root />
+    <App />
   </StrictMode>
 );

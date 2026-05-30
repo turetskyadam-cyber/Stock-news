@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion';
 import { toRelativeTime } from '../../lib/utils';
 import { FaviconImage } from '../ui/FaviconImage';
-import { BookmarkButton } from '../ui/BookmarkButton';
 import { analyzeSentiment } from '../../lib/sentiment';
 import type { FinnhubNewsItem, SectorConfig } from '../../types/news';
 
@@ -13,8 +12,6 @@ interface StoryModeProps {
   initialIndex: number;
   sector: SectorConfig;
   onClose: () => void;
-  isSaved: (id: number) => boolean;
-  onToggleSave: (item: FinnhubNewsItem) => void;
 }
 
 const slideVariants = {
@@ -42,8 +39,6 @@ export function StoryMode({
   initialIndex,
   sector,
   onClose,
-  isSaved,
-  onToggleSave,
 }: StoryModeProps) {
   const [[current, direction], setPage] = useState<[number, number]>([initialIndex, 0]);
   const [isPaused, setIsPaused] = useState(false);
@@ -273,11 +268,6 @@ export function StoryMode({
                     Read Full Article
                     <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   </a>
-                  <BookmarkButton
-                    isSaved={isSaved(item.id)}
-                    onToggle={() => onToggleSave(item)}
-                    className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/8 text-white/50 transition-colors hover:bg-white/18 hover:text-amber-400"
-                  />
                 </div>
               </div>
             </div>
