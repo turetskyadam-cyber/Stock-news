@@ -1,9 +1,14 @@
 import { deduplicateAndSort } from './utils';
 import { MAX_NEWS_PER_SECTOR } from './constants';
-import { getDemoItems, hasApiKey } from './demoNews';
+import { getDemoItems } from './demoNews';
 import type { FinnhubNewsItem, SectorConfig } from '../types/news';
 
-const KEY = import.meta.env.VITE_MARKETAUX_KEY as string;
+// Default key so the deployed site works without a Vercel env var.
+// Override anytime by setting VITE_MARKETAUX_KEY in the build environment.
+// This is a free, low-stakes, client-side key — rotate it in the Marketaux
+// dashboard if needed (and update this fallback or set the env var).
+const FALLBACK_KEY = 'L9XCjYwQBQ5ryjzKH4BMOhzzrjMGWnPoZOyGGBiL';
+const KEY = ((import.meta.env.VITE_MARKETAUX_KEY as string) || '').trim() || FALLBACK_KEY;
 const BASE = 'https://api.marketaux.com/v1/news/all';
 
 interface MarketauxEntity {
@@ -76,11 +81,6 @@ export async function fetchSectorItems(
   sector: SectorConfig,
   signal: AbortSignal
 ): Promise<FinnhubNewsItem[]> {
-  // No key yet → serve realistic demo articles so the site never looks dead.
-  if (!hasApiKey()) {
-    return getDemoItems(sector.key);
-  }
-
   const params = new URLSearchParams({
     api_token: KEY,
     language: 'en',
@@ -98,12 +98,19 @@ export async function fetchSectorItems(
     params.set('industries', 'Technology,Financial Services,Energy,Healthcare,Industrials');
   }
 
-  const articles = await request(`${BASE}?${params.toString()}`, signal);
-  const items = articles.map((a) => toNewsItem(a, sector.key));
+  try {
+    const articles = await request(`${BASE}?${params.toString()}`, signal);
+    const items = articles.map((a) => toNewsItem(a, sector.key));
 
-  // If the key is valid but the plan/feed returned nothing, fall back to demo
-  // content rather than showing an empty page.
-  if (items.length === 0) return getDemoItems(sector.key);
+    // Empty feed (e.g. quiet day or plan limits) → show demo rather than blank.
+    if (items.length === 0) return getDemoItems(sector.key);
 
-  return deduplicateAndSort(items, MAX_NEWS_PER_SECTOR);
+    return deduplicateAndSort(items, MAX_NEWS_PER_SECTOR);
+  } catch (err) {
+    // Preserve user-initiated cancellations so the hook can ignore them.
+    if (err instanceof Error && err.name === 'AbortError') throw err;
+    // Any other failure (bad key, rate limit, network) → demo content,
+    // so the site never shows an error screen.
+    return getDemoItems(sector.key);
+  }
 }
