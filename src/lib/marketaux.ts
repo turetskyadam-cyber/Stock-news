@@ -77,16 +77,19 @@ async function request(url: string, signal?: AbortSignal): Promise<MarketauxArti
   return data.data ?? [];
 }
 
-export async function fetchSectorItems(
-  sector: SectorConfig,
-  signal: AbortSignal
-): Promise<FinnhubNewsItem[]> {
+// Marketaux's free tier returns 3 articles per request, so fetch several pages
+// to fill the grid with real news. Each page is one API call against the daily
+// quota; the 15-min cache in useSectorNews keeps usage low.
+const PAGES_TO_FETCH = 4;
+
+function buildParams(sector: SectorConfig, page: number): string {
   const params = new URLSearchParams({
     api_token: KEY,
     language: 'en',
     filter_entities: 'true',
     published_after: getPublishedAfter(),
-    limit: '50',
+    limit: '3',
+    page: String(page),
   });
 
   const symbols = sector.symbols ?? [];
@@ -97,10 +100,29 @@ export async function fetchSectorItems(
     // General feed: broad market/business industries.
     params.set('industries', 'Technology,Financial Services,Energy,Healthcare,Industrials');
   }
+  return params.toString();
+}
 
+export async function fetchSectorItems(
+  sector: SectorConfig,
+  signal: AbortSignal
+): Promise<FinnhubNewsItem[]> {
   try {
-    const articles = await request(`${BASE}?${params.toString()}`, signal);
-    const items = articles.map((a) => toNewsItem(a, sector.key));
+    const pages = Array.from({ length: PAGES_TO_FETCH }, (_, i) => i + 1);
+    const results = await Promise.allSettled(
+      pages.map((page) => request(`${BASE}?${buildParams(sector, page)}`, signal))
+    );
+
+    // If the very first page was aborted, propagate so the hook can ignore it.
+    const aborted = results.find(
+      (r) => r.status === 'rejected' && (r.reason as Error)?.name === 'AbortError'
+    );
+    if (aborted) throw (aborted as PromiseRejectedResult).reason;
+
+    const items = results
+      .filter((r): r is PromiseFulfilledResult<MarketauxArticle[]> => r.status === 'fulfilled')
+      .flatMap((r) => r.value)
+      .map((a) => toNewsItem(a, sector.key));
 
     // Empty feed (e.g. quiet day or plan limits) → show demo rather than blank.
     if (items.length === 0) return getDemoItems(sector.key);

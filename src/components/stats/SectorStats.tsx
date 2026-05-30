@@ -76,18 +76,6 @@ export function SectorStats({ items, sector, onStoryMode }: SectorStatsProps) {
       transition={{ duration: 0.4, delay: 0.05 }}
       className="mb-5 flex flex-wrap items-center gap-4 rounded-2xl border border-white/8 bg-white/4 px-4 py-3 backdrop-blur-sm dark:border-white/8 dark:bg-white/4 border-black/6 bg-black/3"
     >
-      {/* Article count */}
-      <div className="flex flex-col">
-        <span className="text-[10px] font-medium uppercase tracking-widest text-white/30 dark:text-white/30 text-black/30">
-          Articles
-        </span>
-        <span className="text-sm font-bold text-white/80 dark:text-white/80 text-gray-800 tabular-nums">
-          {items.length}
-        </span>
-      </div>
-
-      <div className="h-7 w-px bg-white/10 dark:bg-white/10 bg-black/10" />
-
       {/* Sentiment */}
       <div className="flex flex-col">
         <span className="text-[10px] font-medium uppercase tracking-widest text-white/30 dark:text-white/30 text-black/30">
