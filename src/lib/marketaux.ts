@@ -1,6 +1,7 @@
 import { deduplicateAndSort } from './utils';
 import { MAX_NEWS_PER_SECTOR } from './constants';
 import { getDemoItems } from './demoNews';
+import { curateForSector } from './sectorRelevance';
 import type { FinnhubNewsItem, SectorConfig } from '../types/news';
 
 // Default key so the deployed site works without a Vercel env var.
@@ -127,7 +128,9 @@ export async function fetchSectorItems(
     // Empty feed (e.g. quiet day or plan limits) → show demo rather than blank.
     if (items.length === 0) return getDemoItems(sector.key);
 
-    return deduplicateAndSort(items, MAX_NEWS_PER_SECTOR);
+    const deduped = deduplicateAndSort(items, MAX_NEWS_PER_SECTOR);
+    // Re-rank so the most on-topic stories lead — the "hand-selected" feel.
+    return curateForSector(deduped, sector);
   } catch (err) {
     // Preserve user-initiated cancellations so the hook can ignore them.
     if (err instanceof Error && err.name === 'AbortError') throw err;

@@ -1,4 +1,5 @@
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/newsreader';
 
 @tailwind base;
 @tailwind components;
@@ -29,5 +30,20 @@
   @keyframes shimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(200%); }
+  }
+}
+
+@layer utilities {
+  /* Editorial display serif for headlines — gives a premium, hand-curated feel
+     that sets the site apart from typical all-sans news sites. */
+  .font-display {
+    font-family: 'Newsreader Variable', 'Newsreader', 'Iowan Old Style',
+      'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+    font-optical-sizing: auto;
+  }
+
+  /* Balanced multi-line headlines (avoids orphan words). */
+  .text-balance {
+    text-wrap: balance;
   }
 }
